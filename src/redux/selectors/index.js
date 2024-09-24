@@ -1,1 +1,1 @@
-export { default as CommentsSelectors } from "./commentsSelector";
+export { default as CommentsSelector } from "./commentsSelector";

@@ -1,0 +1,122 @@
+@import 'src/styles/base/variables.less';
+
+.container {
+  position: relative;
+  color: @black;
+}
+
+.input {
+  &:global(.ant-input),
+  &:global(.ant-input-affix-wrapper) {
+    color: @black;
+
+    &:hover {
+      border-color: @black;
+    }
+  }
+
+  &.isActive,
+  &:global(.ant-input):focus,
+  &:global(.ant-input-affix-wrapper-focused) {
+    border-color: @black;
+    box-shadow: 0 0 0 1px lightgray;
+  }
+
+  :global(.ant-input) {
+    color: inherit;
+  }
+
+  &.hasInnerLabel {
+    :global(.ant-input) {
+      margin-top: auto;
+    }
+  }
+
+  :global(.ant-input-prefix) {
+    margin-right: 12px;
+
+    :global(.base-icon) {
+      fill: @black;
+    }
+  }
+
+  &:global(.small) {
+    height: 32px;
+    padding: 4px 10px;
+  }
+
+  &:global(.medium) {
+    height: 42px;
+    padding: 4px 15px;
+    font-size: 14px;
+
+    &.hasInnerLabel {
+      font-size: 13px;
+    }
+
+    &.hasInnerLabel:not(.hasPrefix) {
+      padding: 17px 15px 4px;
+    }
+
+    :global(.ant-input) {
+      font-size: inherit;
+    }
+  }
+
+  &:global(.large) {
+    height: 52px;
+    padding: 6px 15px;
+
+    :global(.ant-input) {
+      font-size: 14px;
+    }
+  }
+}
+
+textarea {
+  &.input {
+    &:global(.small) {
+      min-height: 37px;
+      height: auto;
+    }
+
+    &:global(.medium) {
+      min-height: 47px;
+      height: auto;
+    }
+
+    &:global(.large) {
+      min-height: 55px;
+      height: auto;
+    }
+  }
+}
+
+.label {
+  white-space: nowrap;
+  overflow: hidden;
+
+  &.isLabelOuter {
+    font-size: 13px;
+  }
+
+  &.isLabelInner {
+    max-width: 50%;
+    position: absolute;
+    top: 4px;
+    left: 15px;
+    right: 15px;
+    z-index: 2;
+    font-size: 13px;
+
+    &.hasPrefix {
+      left: 46px;
+    }
+  }
+
+  &:global(.large) {
+    &.isLabelInner {
+      top: 6px;
+    }
+  }
+}

@@ -1,17 +1,21 @@
 import { commentsApi } from "../api";
-import { COMMENTS } from "../constants";
+import { COMMENTS, COMMENTS_ADD } from "../constants";
 
 class CommentsServices {
-  async getComments() {
-    const response = await commentsApi.get(COMMENTS);
+  async getComments(params) {
+    return commentsApi.get(COMMENTS, { ...params });
+  }
+
+  async getComment(id) {
+    return commentsApi.get(`${COMMENTS}/${id}`);
+  }
+
+  async addComment(body) {
+    return commentsApi.post(COMMENTS_ADD, body);
   }
 
   async removeComment(id) {
-    const response = await commentsApi.delete(COMMENTS);
-  }
-
-  async addComment(comment) {
-    const response = await commentsApi.post(COMMENTS, comment);
+    return commentsApi.delete(`${COMMENTS}/${id}`);
   }
 }
 

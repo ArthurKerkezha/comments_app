@@ -1,5 +1,6 @@
-import axios from "axios";
+import { axiosCancellationInterceptor } from "./utils";
 
-export const commentsApi = axios.create({
+export const commentsApi = axiosCancellationInterceptor({
   baseURL: "https://dummyjson.com/",
+  headers: { "Content-Type": "application/json" },
 });

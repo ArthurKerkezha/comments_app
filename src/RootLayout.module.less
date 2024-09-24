@@ -1,0 +1,16 @@
+@import "styles/base/breakpoints.less";
+
+.layout {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  &Content {
+    padding: 0 30px;
+    overflow: hidden;
+    @media (max-width: @breakpoint-md-max) {
+      padding: 0 10px;
+    }
+  }
+}

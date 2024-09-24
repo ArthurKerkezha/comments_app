@@ -1,7 +1,7 @@
 import { commentsApi } from "../api";
 import { COMMENTS } from "../constants";
 
-class UserCommentsServices {
+class CommentsServices {
   async getComments() {
     const response = await commentsApi.get(COMMENTS);
   }
@@ -14,3 +14,5 @@ class UserCommentsServices {
     const response = await commentsApi.post(COMMENTS, comment);
   }
 }
+
+export default new CommentsServices();

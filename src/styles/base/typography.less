@@ -1,0 +1,64 @@
+@import 'src/styles/base/variables.less';
+
+@maxSize: 60;
+.f-loop (@i) when (@i <= @maxSize) {
+  .f-s-@{i} {
+    font-size: @i * 1px !important;
+  }
+  .f-loop(@i + 1);
+}
+.f-loop(0);
+
+@maxWeight: 9;
+.w-loop (@i) when (@i <= @maxWeight) {
+  .f-w-@{i} {
+    font-weight: @i * 100 !important;
+  }
+  .w-loop(@i + 1);
+}
+.w-loop(0);
+
+/* TEXTS */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.td-lt {
+  text-decoration: line-through;
+}
+
+.text-crossed {
+  text-decoration: line-through;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.white-text {
+  color: @white;
+}
+
+.w-s-normal {
+  white-space: normal;
+}
+
+.bold {
+  font-weight: bold;
+}

@@ -1,0 +1,139 @@
+{
+  "extends": ["react-app", "airbnb", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "globals": {
+    "google": "readonly"
+  },
+  "rules": {
+    // COMMON
+    "no-sync": 0,
+    "no-console": 0,
+    "global-require": 0,
+    "no-else-return": 0,
+    "prefer-destructuring": 0,
+    "class-methods-use-this": 0,
+    "no-template-curly-in-string": 0,
+    "import/prefer-default-export": 0,
+    "import/no-extraneous-dependencies": 0,
+    // REACT
+    "react/sort-comp": 0,
+    "react/display-name": 0,
+    "react/jsx-fragments": 0,
+    "react/jsx-handler-names": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/no-array-index-key": 0,
+    "react/no-unused-prop-types": 0,
+    "react/state-in-constructor": 0,
+    "react/no-did-mount-set-state": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/no-did-update-set-state": 0,
+    "react/destructuring-assignment": 0,
+    "react/static-property-placement": 0,
+    "react/prefer-stateless-function": 0,
+    "react/no-access-state-in-setstate": 0,
+    "react/forbid-prop-types": 0,
+    "no-extra-parens": [2, "functions"],
+    "react/prop-types": "off",
+    "complexity": [2, 42],
+    "no-useless-call": 2,
+    "import/no-unresolved":0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx",".ts",".tsx"] }],
+    // VARIABLES
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "none"
+      }
+    ],
+    "no-dupe-keys": "error",
+    "object-shorthand": "error",
+    // STYLISTIC ISSUES
+    "linebreak-style": [0, "windows"],
+    "newline-after-var": [1, "always"],
+    "no-param-reassign": ["error", { "props": false }],
+    "camelcase": [
+      2,
+      {
+        "properties": "never",
+        "allow": ["^UNSAFE_"]
+      }
+    ],
+    "comma-dangle": [
+      2,
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "ignore"
+      }
+    ],
+    "indent": "off",
+    "max-len": [
+      "warn",
+      {
+        "code": 120,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreComments": true
+      }
+    ],
+    "max-nested-callbacks": [2, 4],
+    "max-params": [2, 5],
+    "no-unneeded-ternary": 2,
+    "no-bitwise": 2,
+    "callback-return": 2,
+    "no-path-concat": 2,
+    "handle-callback-err": 1,
+    "react/sort-prop-types": [
+      "warn",
+      {
+        "ignoreCase": true,
+        "callbacksLast": true,
+        "requiredFirst": true
+      }
+    ],
+    "react/jsx-sort-props": [
+      "warn",
+      {
+        "callbacksLast": true,
+        "shorthandFirst": true,
+        "shorthandLast": false,
+        "ignoreCase": true,
+        "noSortAlphabetically": true,
+        "reservedFirst": ["key", "ref"]
+      }
+    ],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": ["arrow-function","function-declaration"],
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "variables": false,
+        "classes": true
+      }
+    ],
+    "react/jsx-max-props-per-line": [
+      2,
+      {
+        "maximum": 1,
+        "when": "multiline"
+      }
+    ],
+    "react/jsx-closing-tag-location": 2,
+    "react/no-danger": 1,
+    "react/no-string-refs": 1
+  }
+}

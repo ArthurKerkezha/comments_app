@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import { Modal } from "antd";
 
 const FormModal = ({ children, isOpen, onClose }) => (
-  <Modal open={isOpen} onCancel={onClose}>
+  <Modal
+    destroyOnClose
+    open={isOpen}
+    okButtonProps={{ style: { display: "none" } }}
+    onCancel={onClose}
+  >
     {children}
   </Modal>
 );

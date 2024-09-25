@@ -9,6 +9,7 @@ import { CommentsThunks } from "../../redux/thunks";
 import { CommentForm } from "../../pages/CommentsList/components";
 import { DetailsCard, Sider, FormModal } from "../../shared/components";
 import { useLoading } from "../../hooks";
+import Storage from "../../helpers/storage";
 
 const ContentViewWrapper = () => {
   const { id } = useParams();
@@ -35,7 +36,11 @@ const ContentViewWrapper = () => {
 
   const onClick = () => navigate(`/comments/${id}`);
 
-  const onClose = () => navigate("/");
+  const onClose = () => {
+    Storage.clearFormValues();
+
+    navigate("/");
+  };
 
   const Wrapper = isMobile ? FormModal : Sider;
 

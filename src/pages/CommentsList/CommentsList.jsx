@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useBeforeUnload } from "react-router-dom";
-import { List } from "antd";
+import { List, FloatButton } from "antd";
 
 import { CommentsSelector } from "../../redux/selectors";
 import { CommentsThunks } from "../../redux/thunks";
@@ -44,16 +44,19 @@ const CommentsList = () => {
   );
 
   return (
-    <List
-      ref={scrollRef}
-      bordered
-      size="small"
-      loading={isLoading}
-      className={styles.list}
-      loadMore={<div ref={elemRef} className={styles.listMore} />}
-      dataSource={comments}
-      renderItem={(item) => <CommentsListItem item={item} />}
-    />
+    <>
+      <List
+        ref={scrollRef}
+        bordered
+        size="small"
+        loading={isLoading}
+        className={styles.list}
+        loadMore={<div ref={elemRef} className={styles.listMore} />}
+        dataSource={comments}
+        renderItem={(item) => <CommentsListItem item={item} />}
+      />
+      <FloatButton.BackTop target={() => scrollRef.current} />
+    </>
   );
 };
 

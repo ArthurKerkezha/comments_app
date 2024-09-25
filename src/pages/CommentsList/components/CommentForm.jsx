@@ -37,6 +37,7 @@ const CommentForm = () => {
       Storage.setFormValues({ body });
     }, [body]),
   );
+
   const initialValues = Storage.getFormValues();
 
   return (

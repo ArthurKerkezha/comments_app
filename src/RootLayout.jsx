@@ -1,37 +1,41 @@
-import { Outlet } from "react-router-dom";
-import { Layout } from "antd";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Button, Layout } from "antd";
 
+import { RollbackOutlined } from "@ant-design/icons";
 import ContentViewWrapper from "./components/ContentViewWrapper";
+import { Header } from "./shared/components";
+import ResetList from "./components/ResetList";
 import styles from "./RootLayout.module.less";
 
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
-const RootLayout = () => (
-  // const onBeforeUnload = useCallback((event) => {
-  //   event.preventDefault();
-  //   // Custom logic to handle the refresh
-  //   // Display a confirmation message or perform necessary actions
-  //   console.log("onBeforeUnload");
-  // }, []);
-  //
-  // useEffect(() => {
-  //   window.addEventListener("beforeunload", onBeforeUnload);
-  //   return () => {
-  //     window.removeEventListener("beforeunload", onBeforeUnload);
-  //   };
-  // }, [onBeforeUnload]);
+const RootLayout = () => {
+  const { commentId } = useParams();
+  const navigate = useNavigate();
 
-  <Layout className={styles.layout}>
-    <Header>
-      <span className="white-text">Hello world !!!</span>
-    </Header>
-    <Layout>
-      <Content className={styles.layoutContent}>
-        <Outlet />
-      </Content>
-      <ContentViewWrapper />
+  const onGoBack = () => {
+    navigate(-1);
+  };
+
+  return (
+    <Layout className={styles.layout}>
+      <Header>
+        <div className="w-100 d-f jc-fe ai-c">
+          {commentId ? (
+            <Button icon={<RollbackOutlined />} onClick={onGoBack} />
+          ) : (
+            <ResetList />
+          )}
+        </div>
+      </Header>
+      <Layout>
+        <Content className={styles.layoutContent}>
+          <Outlet />
+        </Content>
+        <ContentViewWrapper />
+      </Layout>
     </Layout>
-  </Layout>
-);
+  );
+};
 
 export default RootLayout;

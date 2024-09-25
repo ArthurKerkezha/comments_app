@@ -11,7 +11,6 @@ const Comments = () => {
   const comments = useSelector(CommentsSelector.selectComments);
 
   useEffect(() => {
-    // if (!isEmpty(comments)) return;
     dispatch(CommentsThunks.loadComments());
   }, [dispatch]);
 

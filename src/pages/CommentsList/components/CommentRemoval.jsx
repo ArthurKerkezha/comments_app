@@ -16,7 +16,7 @@ const CommentRemoval = ({ id }) => {
     e.stopPropagation();
 
     setIsLoading(true);
-
+    // TODO there will always be errors here if there is no comment with this "id" in the database
     await dispatch(CommentsThunks.removeComment(id));
 
     setIsLoading(false);

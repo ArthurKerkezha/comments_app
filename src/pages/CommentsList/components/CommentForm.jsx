@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { useBeforeUnload } from "react-router-dom";
 
 import { BaseInput } from "../../../shared/components";
 import { CommentsThunks } from "../../../redux/thunks";
 import { CommentsSelector } from "../../../redux/selectors";
+import Storage from "../../../helpers/storage";
 
 const CommentForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,17 +22,28 @@ const CommentForm = () => {
       userId: comment.user.id,
     });
 
+    Storage.clearFormValues();
+
     setIsLoading(true);
+
     await dispatch(CommentsThunks.addComment(data));
     form.resetFields();
+
     setIsLoading(false);
   };
+
+  useBeforeUnload(
+    useCallback(() => {
+      Storage.setFormValues({ body });
+    }, [body]),
+  );
+  const initialValues = Storage.getFormValues();
 
   return (
     <Form
       form={form}
       className="w-100"
-      // initialValues={{ body: "hello world" }}
+      initialValues={initialValues}
       autoComplete="off"
       onFinish={onFinish}
     >

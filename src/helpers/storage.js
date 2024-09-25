@@ -26,6 +26,18 @@ class Storage {
   static clearCommentsParamsState() {
     return localStorage.removeItem(StorageEnum.CommentsParams);
   }
+
+  static setFormValues(values) {
+    return localStorage.setItem(StorageEnum.FormValues, JSON.stringify(values));
+  }
+
+  static getFormValues() {
+    return JSON.parse(localStorage.getItem(StorageEnum.FormValues));
+  }
+
+  static clearFormValues() {
+    return localStorage.removeItem(StorageEnum.FormValues);
+  }
 }
 
 export default Storage;

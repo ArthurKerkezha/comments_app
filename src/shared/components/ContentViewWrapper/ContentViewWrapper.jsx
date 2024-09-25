@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
-import { isEmpty } from "lodash";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,15 +11,17 @@ import FormModal from "../FormModal";
 import DetailsCard from "../DetailsCard";
 import Sider from "../Sider";
 
-const FormContentWrapper = () => {
+const ContentViewWrapper = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const comment = useSelector(CommentsSelector.selectComment);
   const isCommentLoading = useSelector(CommentsSelector.selectIsCommentLoading);
+  const isMobile = useMediaQuery({ query: BREAKPOINTS_MEDIA_MAP.mdMax });
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
+
     dispatch(CommentsThunks.loadComment(id));
   }, [id, dispatch]);
 
@@ -32,26 +33,22 @@ const FormContentWrapper = () => {
     navigate("/");
   };
 
-  const isMobile = useMediaQuery({ query: BREAKPOINTS_MEDIA_MAP.mdMax });
-
-  const FormContent = isMobile ? FormModal : Sider;
+  const Wrapper = isMobile ? FormModal : Sider;
 
   return (
-    <FormContent isOpen={id} onClose={onClose}>
+    <Wrapper isOpen={id} onClose={onClose}>
       <div className="d-f f-d-column ai-c jc-c w-100 h-100">
         <CommentForm />
 
-        {!isEmpty(comment) && (
-          <DetailsCard
-            title={comment.user.fullName}
-            content={comment.body}
-            isLoading={isCommentLoading}
-            onClick={onClick}
-          />
-        )}
+        <DetailsCard
+          title={comment?.user?.fullName}
+          content={comment?.body}
+          isLoading={isCommentLoading}
+          onClick={onClick}
+        />
       </div>
-    </FormContent>
+    </Wrapper>
   );
 };
 
-export default FormContentWrapper;
+export default ContentViewWrapper;

@@ -25,7 +25,7 @@ DetailsCard.propTypes = {
 
 DetailsCard.defaultProps = {
   title: "",
-  content: "PropTypes.string",
+  content: "",
   isLoading: false,
   onClick: null,
 };

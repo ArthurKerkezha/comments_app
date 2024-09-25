@@ -7,7 +7,7 @@ import {
 import { Layout } from "antd";
 
 import styles from "./RootLayout.module.less";
-import FormContentWrapper from "./shared/components/FormContentWrapper";
+import ContentViewWrapper from "./shared/components/ContentViewWrapper";
 
 const { Content, Header } = Layout;
 
@@ -29,7 +29,7 @@ const RootLayout = () => {
         <Content className={styles.layoutContent}>
           <Outlet />
         </Content>
-        <FormContentWrapper />
+        <ContentViewWrapper />
       </Layout>
     </Layout>
   );

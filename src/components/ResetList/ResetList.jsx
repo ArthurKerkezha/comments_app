@@ -2,8 +2,8 @@ import React from "react";
 import { Button } from "antd";
 import { SyncOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useNavigate, useParams } from "react-router-dom";
+
 import { CommentsActions } from "../../redux/slices/commentsSlice";
 import { CommentsSelector } from "../../redux/selectors";
 

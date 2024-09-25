@@ -1,7 +1,7 @@
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { Button, Layout } from "antd";
-
 import { RollbackOutlined } from "@ant-design/icons";
+
 import ContentViewWrapper from "./components/ContentViewWrapper";
 import { Header } from "./shared/components";
 import ResetList from "./components/ResetList";

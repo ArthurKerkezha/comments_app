@@ -3,36 +3,53 @@ import { notification } from "antd";
 import axios from "axios";
 
 import { CommentsServices } from "../../services";
+import { CommentsSelector } from "../selectors";
+import { generateErrorMessage } from "../../utils";
 
 const loadComments = createAsyncThunk(
   "[commentsThunks]/loadComments",
-  async (_) => {
-    try {
-      const { data } = await CommentsServices.getComments();
+  async (_, { getState }) => {
+    const state = getState();
+    const limit = CommentsSelector.selectLimit(state);
+    const skip = CommentsSelector.selectSkip(state);
+    const comments = CommentsSelector.selectComments(state);
 
-      return data;
+    try {
+      const { data } = await CommentsServices.getComments({
+        params: {
+          limit,
+          skip,
+        },
+      });
+
+      return {
+        ...data,
+        comments: [...comments, ...data.comments],
+      };
     } catch (error) {
       if (!axios.isCancel(error)) {
-        notification.error({ message: error.message });
+        notification.error({ message: generateErrorMessage(error) });
       }
 
-      return [];
+      return null;
     }
   },
 );
 
 const loadComment = createAsyncThunk(
   "[commentsThunks]/loadComment",
-  async (id) => {
+  async (id, { rejectWithValue }) => {
     try {
       const { data } = await CommentsServices.getComment(id);
 
       return data;
     } catch (error) {
       if (!axios.isCancel(error)) {
-        notification.error({ message: error.message });
+        notification.error({ message: generateErrorMessage(error) });
+
+        return rejectWithValue(error.message);
       }
-      return {};
+      return null;
     }
   },
 );
@@ -46,7 +63,7 @@ const removeComment = createAsyncThunk(
       return data;
     } catch (error) {
       if (!axios.isCancel(error)) {
-        notification.error({ message: error.message });
+        notification.error({ message: generateErrorMessage(error) });
       }
       return null;
     }
@@ -55,16 +72,14 @@ const removeComment = createAsyncThunk(
 
 const addComment = createAsyncThunk(
   "[commentsThunks]/addComment",
-  // eslint-disable-next-line consistent-return
   async (data) => {
     try {
       const response = await CommentsServices.addComment(data);
 
-      console.log(response);
-      // return data;
+      return response.data;
     } catch (error) {
       if (!axios.isCancel(error)) {
-        notification.error({ message: error.message });
+        notification.error({ message: generateErrorMessage(error) });
       }
       return null;
     }

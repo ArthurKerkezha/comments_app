@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Card, List } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
 
 import CommentRemoval from "./CommentRemoval";
 import { CommentsActions } from "../../../redux/slices/commentsSlice";
@@ -13,7 +13,9 @@ const CommentsListItem = ({ item }) => {
   const dispatch = useDispatch();
 
   const onClick = () => {
-    dispatch(CommentsActions.setComment(item));
+    // TODO for this moment only for demonstration, since BE does not work correctly
+    // dispatch(CommentsActions.setComment(item));
+    // TODO the source of truth must be only one (in this case it should be query parameter)
     navigate(`/${item.id}`);
   };
 

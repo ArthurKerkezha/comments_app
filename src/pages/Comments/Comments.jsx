@@ -1,13 +1,17 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
+import { isEmpty } from "lodash";
 import { CommentsThunks } from "../../redux/thunks";
 import { CommentsList } from "./components";
+import { CommentsSelector } from "../../redux/selectors";
 
 const Comments = () => {
   const dispatch = useDispatch();
+  const comments = useSelector(CommentsSelector.selectComments);
 
   useEffect(() => {
+    // if (!isEmpty(comments)) return;
     dispatch(CommentsThunks.loadComments());
   }, [dispatch]);
 

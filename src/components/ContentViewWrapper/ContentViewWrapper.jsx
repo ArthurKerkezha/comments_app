@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { BREAKPOINTS_MEDIA_MAP } from "../../../constants";
-import { CommentsSelector } from "../../../redux/selectors";
-import { CommentsThunks } from "../../../redux/thunks";
-import { CommentForm } from "../../../pages/Comments/components";
-import FormModal from "../FormModal";
-import DetailsCard from "../DetailsCard";
-import Sider from "../Sider";
+import { BREAKPOINTS_MEDIA_MAP } from "../../constants";
+import { CommentsSelector } from "../../redux/selectors";
+import { CommentsThunks } from "../../redux/thunks";
+import { CommentForm } from "../../pages/Comments/components";
+import { DetailsCard, Sider, FormModal } from "../../shared/components";
 
 const ContentViewWrapper = () => {
   const { id } = useParams();
@@ -19,11 +17,19 @@ const ContentViewWrapper = () => {
   const isMobile = useMediaQuery({ query: BREAKPOINTS_MEDIA_MAP.mdMax });
   const navigate = useNavigate();
 
+  const loadComments = useCallback(async () => {
+    const payload = await dispatch(CommentsThunks.loadComment(id));
+
+    if (payload.meta.rejectedWithValue) {
+      navigate("/");
+    }
+  }, [dispatch, id, navigate]);
+
   useEffect(() => {
     if (!id) return;
 
-    dispatch(CommentsThunks.loadComment(id));
-  }, [id, dispatch]);
+    loadComments();
+  }, [id, dispatch, loadComments]);
 
   const onClick = () => {
     navigate(`/comments/${id}`);

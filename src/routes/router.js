@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-import { CommentDetails, Comments, ErrorPage } from "../pages";
+import { CommentDetails, CommentsList, ErrorPage } from "../pages";
 import RootLayout from "../RootLayout";
 
 export const router = createBrowserRouter([
@@ -11,11 +11,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Comments />,
+        element: <CommentsList />,
         children: [
           {
             path: "/:id",
-            element: <Comments />,
+            element: <CommentsList />,
           },
         ],
       },

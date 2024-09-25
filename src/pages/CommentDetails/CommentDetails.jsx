@@ -6,15 +6,15 @@ import { isEmpty } from "lodash";
 import { CommentsThunks } from "../../redux/thunks";
 import { CommentsSelector } from "../../redux/selectors";
 import { DetailsCard } from "../../shared/components";
+import { useLoading } from "../../hooks";
 
 const CommentDetails = () => {
   const { commentId } = useParams();
   const dispatch = useDispatch();
-  const comment = useSelector(CommentsSelector.selectComment);
-  const isCommentLoading = useSelector(CommentsSelector.selectIsCommentLoading);
   const navigate = useNavigate();
+  const comment = useSelector(CommentsSelector.selectComment);
 
-  const loadComments = useCallback(async () => {
+  const loadComment = useCallback(async () => {
     const payload = await dispatch(CommentsThunks.loadComment(commentId));
 
     if (payload.meta.rejectedWithValue) {
@@ -22,10 +22,12 @@ const CommentDetails = () => {
     }
   }, [commentId, dispatch, navigate]);
 
+  const [loadCommentDetails, isLoading] = useLoading(loadComment);
+
   useEffect(() => {
     // TODO and there will always be errors here if there is no comment with this "id" in the database
-    loadComments();
-  }, [dispatch, loadComments]);
+    loadCommentDetails();
+  }, [dispatch, loadCommentDetails]);
 
   if (isEmpty(comment)) return null;
 
@@ -33,7 +35,7 @@ const CommentDetails = () => {
     <DetailsCard
       title={comment.user.fullName}
       content={comment.body}
-      isLoading={isCommentLoading}
+      isLoading={isLoading}
     />
   );
 };

@@ -6,7 +6,7 @@ export const useGetScrollPositions = (ref) => {
 
   const onScroll = useCallback(() => {
     setScrollPosition(ref.current.scrollTop);
-  }, []);
+  }, [ref]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onDebouncedScroll = useCallback(debounce(onScroll, 40), [onScroll]);
@@ -17,7 +17,10 @@ export const useGetScrollPositions = (ref) => {
     ref.current.addEventListener("scroll", onDebouncedScroll, true);
 
     return () => {
-      ref.current.removeEventListener("scroll", onDebouncedScroll, true);
+      if (ref.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ref.current.removeEventListener("scroll", onDebouncedScroll, true);
+      }
     };
   });
 

@@ -15,5 +15,5 @@ export const useScrollToPosition = (
         behavior: "smooth",
       });
     }, delay);
-  }, []);
+  }, [delay, isShouldScroll, position, ref]);
 };

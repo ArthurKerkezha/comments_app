@@ -3,7 +3,6 @@ import { CommentsThunks } from "../thunks";
 
 const initialState = {
   isLoading: false,
-  isCommentLoading: false,
   comments: [],
   comment: {},
   total: 0,
@@ -25,10 +24,7 @@ const commentsSlice = createSlice({
 
         state.comments = payload.comments;
         state.total = payload.total;
-        state.skip = state.limit + state.skip;
-      })
-      .addCase(CommentsThunks.loadComment.pending, (state) => {
-        state.isCommentLoading = true;
+        state.skip = payload.limit + payload.skip;
       })
       .addCase(CommentsThunks.addComment.fulfilled, (state, { payload }) => {
         state.comments = [payload, ...state.comments];
@@ -52,15 +48,6 @@ const commentsSlice = createSlice({
         ),
         (state) => {
           state.isLoading = false;
-        },
-      )
-      .addMatcher(
-        isAnyOf(
-          CommentsThunks.loadComment.fulfilled,
-          CommentsThunks.loadComment.rejected,
-        ),
-        (state) => {
-          state.isCommentLoading = false;
         },
       );
   },

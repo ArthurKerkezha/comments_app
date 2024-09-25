@@ -6,18 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { BREAKPOINTS_MEDIA_MAP } from "../../constants";
 import { CommentsSelector } from "../../redux/selectors";
 import { CommentsThunks } from "../../redux/thunks";
-import { CommentForm } from "../../pages/Comments/components";
+import { CommentForm } from "../../pages/CommentsList/components";
 import { DetailsCard, Sider, FormModal } from "../../shared/components";
+import { useLoading } from "../../hooks";
 
 const ContentViewWrapper = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const comment = useSelector(CommentsSelector.selectComment);
-  const isCommentLoading = useSelector(CommentsSelector.selectIsCommentLoading);
   const isMobile = useMediaQuery({ query: BREAKPOINTS_MEDIA_MAP.mdMax });
   const navigate = useNavigate();
 
-  const loadComments = useCallback(async () => {
+  const loadComment = useCallback(async () => {
     const payload = await dispatch(CommentsThunks.loadComment(id));
 
     if (payload.meta.rejectedWithValue) {
@@ -25,19 +25,17 @@ const ContentViewWrapper = () => {
     }
   }, [dispatch, id, navigate]);
 
+  const [loadCommentDetails, isLoading] = useLoading(loadComment);
+
   useEffect(() => {
     if (!id) return;
 
-    loadComments();
-  }, [id, dispatch, loadComments]);
+    loadCommentDetails();
+  }, [id, dispatch, loadCommentDetails]);
 
-  const onClick = () => {
-    navigate(`/comments/${id}`);
-  };
+  const onClick = () => navigate(`/comments/${id}`);
 
-  const onClose = () => {
-    navigate("/");
-  };
+  const onClose = () => navigate("/");
 
   const Wrapper = isMobile ? FormModal : Sider;
 
@@ -49,7 +47,7 @@ const ContentViewWrapper = () => {
         <DetailsCard
           title={comment?.user?.fullName}
           content={comment?.body}
-          isLoading={isCommentLoading}
+          isLoading={isLoading}
           onClick={onClick}
         />
       </div>

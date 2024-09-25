@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notification } from "antd";
 import axios from "axios";
 
+import Storage from "../../helpers/storage";
 import { CommentsServices } from "../../services";
 import { CommentsSelector } from "../selectors";
 import { generateErrorMessage } from "../../utils";
@@ -12,15 +13,23 @@ const loadComments = createAsyncThunk(
     const state = getState();
     const limit = CommentsSelector.selectLimit(state);
     const skip = CommentsSelector.selectSkip(state);
+    const total = CommentsSelector.selectTotal(state);
     const comments = CommentsSelector.selectComments(state);
+
+    if ((skip > total || skip === total) && skip !== 0) return null;
+
+    const storageParams = Storage.getCommentsParamsState();
+
+    const params = storageParams
+      ? { limit: storageParams.skip }
+      : { limit, skip };
 
     try {
       const { data } = await CommentsServices.getComments({
-        params: {
-          limit,
-          skip,
-        },
+        params,
       });
+
+      Storage.clearCommentsParamsState();
 
       return {
         ...data,

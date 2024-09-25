@@ -1,3 +1,3 @@
 export { ErrorPage } from "./errorPage";
-export { Comments } from "./Comments";
+export { CommentsList } from "./CommentsList";
 export { CommentDetails } from "./CommentDetails";

@@ -8,17 +8,9 @@ const selectComments = createSelector(selectState, (state) => state.comments);
 
 const selectComment = createSelector(selectState, (state) => state.comment);
 
-const selectIsCommentLoading = createSelector(
-  selectState,
-  (state) => state.isCommentLoading,
-);
-
 const selectSkip = createSelector(selectState, (state) => state.skip);
 
-const selectTotal = createSelector(
-  selectState,
-  (state) => console.log(state) || state.total,
-);
+const selectTotal = createSelector(selectState, (state) => state.total);
 
 const selectLimit = createSelector(selectState, (state) => state.limit);
 
@@ -28,7 +20,6 @@ const CommentsSelectors = {
   selectSkip,
   selectComments,
   selectComment,
-  selectIsCommentLoading,
   selectTotal,
   selectLimit,
 };

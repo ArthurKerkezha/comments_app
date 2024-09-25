@@ -1,10 +1,30 @@
+import { StorageEnum } from "../enums";
+
 class Storage {
   static setScrollPosition(position) {
-    return localStorage.setItem("scroll_position", JSON.stringify(position));
+    return localStorage.setItem(
+      StorageEnum.ScrollPositions,
+      JSON.stringify(position),
+    );
   }
 
   static getScrollPosition() {
-    return JSON.parse(localStorage.getItem("scroll_position"));
+    return JSON.parse(localStorage.getItem(StorageEnum.ScrollPositions));
+  }
+
+  static setCommentsParamsState(state) {
+    return localStorage.setItem(
+      StorageEnum.CommentsParams,
+      JSON.stringify(state),
+    );
+  }
+
+  static getCommentsParamsState() {
+    return JSON.parse(localStorage.getItem(StorageEnum.CommentsParams));
+  }
+
+  static clearCommentsParamsState() {
+    return localStorage.removeItem(StorageEnum.CommentsParams);
   }
 }
 

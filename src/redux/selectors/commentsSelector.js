@@ -1,4 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { uniqWith } from "lodash";
+
+import Storage from "../../helpers/storage";
+import { getUniqComments } from "../../utils";
 
 const selectState = (state) => state.comments;
 
@@ -14,6 +18,19 @@ const selectTotal = createSelector(selectState, (state) => state.total);
 
 const selectLimit = createSelector(selectState, (state) => state.limit);
 
+const selectUniqComments = createSelector(
+  selectComments,
+  selectIsLoading,
+  (comments, isLoading) => {
+    const addedComments = Storage.getAddedComments();
+
+    const correctComments = isLoading ? [] : addedComments;
+
+    // TODO this is just for demonstration purposes only, it's not good to do this.
+    return uniqWith([...correctComments, ...comments], getUniqComments);
+  },
+);
+
 const CommentsSelectors = {
   selectState,
   selectIsLoading,
@@ -22,6 +39,7 @@ const CommentsSelectors = {
   selectComment,
   selectTotal,
   selectLimit,
+  selectUniqComments,
 };
 
 export default CommentsSelectors;

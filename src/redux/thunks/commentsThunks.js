@@ -67,7 +67,14 @@ const removeComment = createAsyncThunk(
   "[commentsThunks]/removeComment",
   async (id) => {
     try {
+      const storageState = Storage.getRemovedComments();
+
       const { data } = await CommentsServices.removeComment(id);
+
+      const removedComments = storageState ? [...storageState, data] : [data];
+
+      // TODO this is just for demonstration purposes only, it's not good to do this. There must always be one source of truth
+      Storage.setRemovedComments(removedComments);
 
       return data;
     } catch (error) {
@@ -83,8 +90,17 @@ const addComment = createAsyncThunk(
   "[commentsThunks]/addComment",
   async (data) => {
     try {
+      const storageState = Storage.getAddedComments();
+
       const response = await CommentsServices.addComment(data);
 
+      const addedComments = storageState
+        ? [...storageState, response.data]
+        : [response.data];
+
+      // TODO this is just for demonstration purposes only, it's not good to do this. There must always be one source of truth
+      // TODO in this case there are restrictions BE
+      Storage.setAddedComments(addedComments);
       return response.data;
     } catch (error) {
       if (!axios.isCancel(error)) {

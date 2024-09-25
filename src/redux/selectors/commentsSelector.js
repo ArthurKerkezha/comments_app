@@ -31,6 +31,23 @@ const selectUniqComments = createSelector(
   },
 );
 
+const selectFilteredComments = createSelector(
+  selectUniqComments,
+  (comments) => {
+    const removedComments = Storage.getRemovedComments();
+
+    // TODO this is just for demonstration purposes only, it's not good to do this.
+    return comments.filter((comment) =>
+      removedComments.some(
+        (removedComment) =>
+          removedComment.id !== comment.id &&
+          removedComment.user.fullName !== comment.user.fullName &&
+          removedComment.body !== comment.body,
+      ),
+    );
+  },
+);
+
 const CommentsSelectors = {
   selectState,
   selectIsLoading,
@@ -40,6 +57,7 @@ const CommentsSelectors = {
   selectTotal,
   selectLimit,
   selectUniqComments,
+  selectFilteredComments,
 };
 
 export default CommentsSelectors;

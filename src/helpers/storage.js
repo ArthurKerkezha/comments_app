@@ -38,6 +38,28 @@ class Storage {
   static clearFormValues() {
     return localStorage.removeItem(StorageEnum.FormValues);
   }
+
+  static setAddedComments(comments) {
+    return localStorage.setItem(
+      StorageEnum.AddedComments,
+      JSON.stringify(comments),
+    );
+  }
+
+  static getAddedComments() {
+    return JSON.parse(localStorage.getItem(StorageEnum.AddedComments));
+  }
+
+  static setRemovedComments(comments) {
+    return localStorage.setItem(
+      StorageEnum.RemovedComments,
+      JSON.stringify(comments),
+    );
+  }
+
+  static getRemovedComments() {
+    return JSON.parse(localStorage.getItem(StorageEnum.RemovedComments));
+  }
 }
 
 export default Storage;

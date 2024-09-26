@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { uniqWith } from "lodash";
+import { isEmpty, uniqWith } from "lodash";
 
 import Storage from "../../helpers/storage";
 import { getUniqComments } from "../../utils";
@@ -18,31 +18,30 @@ const selectTotal = createSelector(selectState, (state) => state.total);
 
 const selectLimit = createSelector(selectState, (state) => state.limit);
 
-const selectUniqComments = createSelector(
-  selectComments,
-  selectIsLoading,
-  (comments, isLoading) => {
-    const addedComments = Storage.getAddedComments();
+const selectUniqComments = createSelector(selectComments, (comments) => {
+  const addedComments = Storage.getAddedComments();
 
-    const correctComments = isLoading ? [] : addedComments;
+  if (isEmpty(addedComments) || isEmpty(comments)) {
+    return comments;
+  }
 
-    // TODO this is just for demonstration purposes only, it's not good to do this.
-    return uniqWith([...correctComments, ...comments], getUniqComments);
-  },
-);
+  // TODO this is just for demonstration purposes only, it's not good to do this.
+  return uniqWith([...addedComments, ...comments], getUniqComments);
+});
 
 const selectFilteredComments = createSelector(
   selectUniqComments,
   (comments) => {
     const removedComments = Storage.getRemovedComments();
 
+    if (isEmpty(removedComments)) {
+      return comments;
+    }
+
     // TODO this is just for demonstration purposes only, it's not good to do this.
     return comments.filter((comment) =>
-      removedComments.some(
-        (removedComment) =>
-          removedComment.id !== comment.id &&
-          removedComment.user.fullName !== comment.user.fullName &&
-          removedComment.body !== comment.body,
+      removedComments.every(
+        (removedComment) => !getUniqComments(comment, removedComment),
       ),
     );
   },

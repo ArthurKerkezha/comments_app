@@ -16,9 +16,9 @@ import styles from "./CommentsList.module.less";
 
 const CommentsList = () => {
   const isLoading = useSelector(CommentsSelector.selectIsLoading);
-  const comments = useSelector(CommentsSelector.selectComments);
   const limit = useSelector(CommentsSelector.selectLimit);
   const skip = useSelector(CommentsSelector.selectSkip);
+  const filteredList = useSelector(CommentsSelector.selectFilteredComments);
 
   const dispatch = useDispatch();
   const elemRef = useRef(null);
@@ -52,7 +52,7 @@ const CommentsList = () => {
         loading={isLoading}
         className={styles.list}
         loadMore={<div ref={elemRef} className={styles.listMore} />}
-        dataSource={comments}
+        dataSource={filteredList}
         renderItem={(item) => <CommentsListItem item={item} />}
       />
       <FloatButton.BackTop target={() => scrollRef.current} />

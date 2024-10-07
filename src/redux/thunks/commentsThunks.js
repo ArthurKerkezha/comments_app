@@ -1,11 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { notification } from "antd";
 import axios from "axios";
+import { isEmpty } from "lodash";
 
 import Storage from "../../helpers/storage";
 import { CommentsServices } from "../../services";
 import { CommentsSelector } from "../selectors";
-import { generateErrorMessage } from "../../utils";
+import { generateErrorMessage, getUniqComments } from "../../utils";
 
 const loadComments = createAsyncThunk(
   "[commentsThunks]/loadComments",
@@ -65,13 +66,30 @@ const loadComment = createAsyncThunk(
 
 const removeComment = createAsyncThunk(
   "[commentsThunks]/removeComment",
-  async (id) => {
+  async ({ item }) => {
     try {
-      const storageState = Storage.getRemovedComments();
+      const storageAddedState = Storage.getAddedComments() || [];
+      const commentElem = storageAddedState.find((comment) =>
+        getUniqComments(comment, item),
+      );
 
-      const { data } = await CommentsServices.removeComment(id);
+      if (!isEmpty(commentElem)) {
+        Storage.setAddedComments(
+          storageAddedState.filter(
+            (comment) => !getUniqComments(comment, item),
+          ),
+        );
 
-      const removedComments = storageState ? [...storageState, data] : [data];
+        return commentElem;
+      }
+
+      const storageRemovedState = Storage.getRemovedComments();
+
+      const { data } = await CommentsServices.removeComment(item.id);
+
+      const removedComments = storageRemovedState
+        ? [...storageRemovedState, data]
+        : [data];
 
       // TODO this is just for demonstration purposes only, it's not good to do this. There must always be one source of truth
       Storage.setRemovedComments(removedComments);
@@ -95,7 +113,7 @@ const addComment = createAsyncThunk(
       const response = await CommentsServices.addComment(data);
 
       const addedComments = storageState
-        ? [...storageState, response.data]
+        ? [response.data, ...storageState]
         : [response.data];
 
       // TODO this is just for demonstration purposes only, it's not good to do this. There must always be one source of truth

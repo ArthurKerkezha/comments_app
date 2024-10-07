@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import { CommentsThunks } from "../../../redux/thunks";
 
-const CommentRemoval = ({ id }) => {
+const CommentRemoval = ({ item }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const CommentRemoval = ({ id }) => {
 
     setIsLoading(true);
     // TODO there will always be errors here if there is no comment with this "id" in the database
-    await dispatch(CommentsThunks.removeComment(id));
+    await dispatch(CommentsThunks.removeComment({ item }));
 
     setIsLoading(false);
 
@@ -35,7 +35,7 @@ const CommentRemoval = ({ id }) => {
 };
 
 CommentRemoval.propTypes = {
-  id: PropTypes.number.isRequired,
+  item: PropTypes.object.isRequired,
 };
 
 export default CommentRemoval;

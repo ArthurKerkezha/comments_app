@@ -29,7 +29,7 @@ const CommentsListItem = ({ item }) => {
           title={<span className="fw-w">{item.user.fullName}</span>}
           description={item.body}
         />
-        <CommentRemoval id={item.id} />
+        <CommentRemoval item={item} />
       </Card>
     </List.Item>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -42,7 +42,9 @@ const CommentForm = () => {
     Storage.setFormValues({ body: e.target.value });
   };
 
-  form.setFieldsValue(initialValues);
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [form, initialValues]);
 
   return (
     <Form

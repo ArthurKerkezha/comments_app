@@ -45,7 +45,7 @@ const ContentViewWrapper = () => {
   const Wrapper = isMobile ? FormModal : Sider;
 
   return (
-    <Wrapper isOpen={id} onClose={onClose}>
+    <Wrapper isOpen={!!id} onClose={onClose}>
       <div className="d-f f-d-column ai-c jc-c w-100 h-100">
         <CommentForm />
 

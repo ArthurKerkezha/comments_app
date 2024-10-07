@@ -5,6 +5,8 @@ import { RollbackOutlined } from "@ant-design/icons";
 import ContentViewWrapper from "./components/ContentViewWrapper";
 import { Header } from "./shared/components";
 import ResetList from "./components/ResetList";
+import Uploader from "./components/Uploader";
+import StateFileCreator from "./components/StateFileCreator";
 import styles from "./RootLayout.module.less";
 
 const { Content } = Layout;
@@ -20,6 +22,9 @@ const RootLayout = () => {
   return (
     <Layout className={styles.layout}>
       <Header>
+        <StateFileCreator />
+        <Uploader />
+
         <div className="w-100 d-f jc-fe ai-c">
           {commentId ? (
             <Button icon={<RollbackOutlined />} onClick={onGoBack} />

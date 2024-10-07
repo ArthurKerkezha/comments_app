@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Button, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useBeforeUnload } from "react-router-dom";
 
 import { BaseInput } from "../../../shared/components";
 import { CommentsThunks } from "../../../redux/thunks";
@@ -32,21 +31,26 @@ const CommentForm = () => {
     setIsLoading(false);
   };
 
-  useBeforeUnload(
-    useCallback(() => {
-      Storage.setFormValues({ body });
-    }, [body]),
-  );
-
   const initialValues = Storage.getFormValues();
+
+  const onChange = (e) => {
+    const value = e.target.value;
+
+    if (!value) {
+      Storage.clearFormValues();
+    }
+    Storage.setFormValues({ body: e.target.value });
+  };
+
+  form.setFieldsValue(initialValues);
 
   return (
     <Form
       form={form}
       className="w-100"
-      initialValues={initialValues}
       autoComplete="off"
       onFinish={onFinish}
+      onChange={onChange}
     >
       <Form.Item name="body">
         <BaseInput

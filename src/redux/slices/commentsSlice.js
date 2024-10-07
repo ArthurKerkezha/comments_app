@@ -14,6 +14,7 @@ const commentsSlice = createSlice({
   name: "comments",
   initialState,
   reducers: {
+    setFullState: (state, { payload }) => payload,
     clearComments(state) {
       Object.assign(state, initialState);
     },

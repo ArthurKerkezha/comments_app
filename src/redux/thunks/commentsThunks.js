@@ -52,7 +52,7 @@ const loadSavedState = createAsyncThunk(
 
 const loadComments = createAsyncThunk(
   "[commentsThunks]/loadComments",
-  async (_, { getState, signal, rejectWithValue }) => {
+  async (_, { getState }) => {
     const state = getState();
     const skip = CommentsSelector.selectSkip(state);
     const total = CommentsSelector.selectTotal(state);
@@ -95,7 +95,7 @@ const loadComment = createAsyncThunk(
       if (!axios.isCancel(error)) {
         notification.error({ message: generateErrorMessage(error) });
 
-        return rejectWithValue(error.message);
+        return null;
       }
       return null;
     }

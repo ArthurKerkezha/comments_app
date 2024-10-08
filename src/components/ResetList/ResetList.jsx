@@ -8,6 +8,7 @@ import { useMediaQuery } from "react-responsive";
 import { CommentsActions } from "../../redux/slices/commentsSlice";
 import { CommentsSelector } from "../../redux/selectors";
 import { BREAKPOINTS_MEDIA_MAP } from "../../constants";
+import { CommentsThunks } from "../../redux/thunks";
 
 const ResetList = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const ResetList = () => {
 
   const onClick = async () => {
     dispatch(CommentsActions.clearComments());
+    await dispatch(CommentsThunks.loadComments());
 
     if (id) {
       navigate("/");

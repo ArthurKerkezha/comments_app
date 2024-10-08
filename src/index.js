@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 
 import { Loader } from "./shared/components";
-import { store } from "./redux/configureStore";
+import store from "./redux/configureStore";
 import { router } from "./routes";
 import "./styles/app.less";
 

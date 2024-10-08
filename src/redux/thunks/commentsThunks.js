@@ -3,45 +3,83 @@ import { notification } from "antd";
 import axios from "axios";
 import { isEmpty } from "lodash";
 
-import Storage from "../../helpers/storage";
 import { CommentsServices } from "../../services";
 import { CommentsSelector } from "../selectors";
-import { generateErrorMessage, getUniqComments } from "../../utils";
+import {
+  calculateNextSkip,
+  generateErrorMessage,
+  getUniqComments,
+} from "../../utils";
+import Storage from "../../helpers/storage";
+import { DEFAULT_LIMIT } from "../../constants";
 
-const loadComments = createAsyncThunk(
-  "[commentsThunks]/loadComments",
-  async (_, { getState }) => {
-    const state = getState();
-    const limit = CommentsSelector.selectLimit(state);
-    const skip = CommentsSelector.selectSkip(state);
-    const total = CommentsSelector.selectTotal(state);
-    const comments = CommentsSelector.selectComments(state);
+const loadInitialState = createAsyncThunk(
+  "[commentsThunks]/loadInitialState",
+  async (_, { dispatch }) => {
+    const storageState = Storage.getApplicationState();
 
-    if ((skip > total || skip === total) && skip !== 0) return null;
+    const thunk = storageState ? loadSavedState : loadComments;
 
-    const storageParams = Storage.getCommentsParamsState();
+    return dispatch(thunk());
+  },
+);
 
-    const params = storageParams
-      ? { limit: storageParams.skip }
-      : { limit, skip };
+const loadSavedState = createAsyncThunk(
+  "[commentsThunks]/loadSavedState",
+  // eslint-disable-next-line consistent-return
+  async (_) => {
+    const storageState = Storage.getApplicationState();
+    const { limit, skip } = storageState;
+
+    const countedLimit = skip === DEFAULT_LIMIT ? limit : skip;
+
+    const params = { limit: countedLimit, skip };
 
     try {
       const { data } = await CommentsServices.getComments({
         params,
       });
 
-      Storage.clearCommentsParamsState();
+      return { ...storageState, ...data };
+    } catch (error) {
+      // TODO errors should be handled correctly
+      if (!axios.isCancel(error)) {
+        notification.error({ message: generateErrorMessage(error) });
+      }
+    }
+  },
+);
 
+const loadComments = createAsyncThunk(
+  "[commentsThunks]/loadComments",
+  async (_, { getState }) => {
+    const state = getState();
+    const skip = CommentsSelector.selectSkip(state);
+    const total = CommentsSelector.selectTotal(state);
+    const comments = CommentsSelector.selectComments(state);
+
+    if (skip >= total && skip !== 0) return;
+
+    const params = {
+      limit: DEFAULT_LIMIT,
+      skip: calculateNextSkip(skip, DEFAULT_LIMIT, total),
+    };
+
+    try {
+      const { data } = await CommentsServices.getComments({
+        params,
+      });
+
+      // eslint-disable-next-line consistent-return
       return {
         ...data,
         comments: [...comments, ...data.comments],
       };
     } catch (error) {
+      // TODO errors should be handled correctly
       if (!axios.isCancel(error)) {
         notification.error({ message: generateErrorMessage(error) });
       }
-
-      return null;
     }
   },
 );
@@ -57,7 +95,7 @@ const loadComment = createAsyncThunk(
       if (!axios.isCancel(error)) {
         notification.error({ message: generateErrorMessage(error) });
 
-        return rejectWithValue(error.message);
+        return null;
       }
       return null;
     }
@@ -66,33 +104,19 @@ const loadComment = createAsyncThunk(
 
 const removeComment = createAsyncThunk(
   "[commentsThunks]/removeComment",
-  async ({ item }) => {
+  async ({ item }, { getState }) => {
+    const addedComments = CommentsSelector.selectAddedComments(getState());
+
     try {
-      const storageAddedState = Storage.getAddedComments() || [];
-      const commentElem = storageAddedState.find((comment) =>
+      const commentElem = addedComments.find((comment) =>
         getUniqComments(comment, item),
       );
 
       if (!isEmpty(commentElem)) {
-        Storage.setAddedComments(
-          storageAddedState.filter(
-            (comment) => !getUniqComments(comment, item),
-          ),
-        );
-
         return commentElem;
       }
 
-      const storageRemovedState = Storage.getRemovedComments();
-
       const { data } = await CommentsServices.removeComment(item.id);
-
-      const removedComments = storageRemovedState
-        ? [...storageRemovedState, data]
-        : [data];
-
-      // TODO this is just for demonstration purposes only, it's not good to do this. There must always be one source of truth
-      Storage.setRemovedComments(removedComments);
 
       return data;
     } catch (error) {
@@ -108,17 +132,10 @@ const addComment = createAsyncThunk(
   "[commentsThunks]/addComment",
   async (data) => {
     try {
-      const storageState = Storage.getAddedComments();
-
       const response = await CommentsServices.addComment(data);
-
-      const addedComments = storageState
-        ? [response.data, ...storageState]
-        : [response.data];
 
       // TODO this is just for demonstration purposes only, it's not good to do this. There must always be one source of truth
       // TODO in this case there are restrictions BE
-      Storage.setAddedComments(addedComments);
       return response.data;
     } catch (error) {
       if (!axios.isCancel(error)) {
@@ -134,6 +151,8 @@ const CommentsThunks = {
   loadComment,
   removeComment,
   addComment,
+  loadInitialState,
+  loadSavedState,
 };
 
 export default CommentsThunks;

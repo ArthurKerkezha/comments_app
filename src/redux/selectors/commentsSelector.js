@@ -1,8 +1,11 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { isEmpty, uniqWith } from "lodash";
 
-import Storage from "../../helpers/storage";
-import { getUniqComments } from "../../utils";
+import {
+  filteredWithAddedComments,
+  filteredWithRemovedComments,
+  getUniqComments,
+} from "../../utils";
 
 const selectState = (state) => state.comments;
 
@@ -18,33 +21,34 @@ const selectTotal = createSelector(selectState, (state) => state.total);
 
 const selectLimit = createSelector(selectState, (state) => state.limit);
 
-const selectUniqComments = createSelector(selectComments, (comments) => {
-  const addedComments = Storage.getAddedComments();
+const selectAddedComments = createSelector(
+  selectState,
+  (state) => state.addedComments,
+);
 
-  if (isEmpty(addedComments) || isEmpty(comments)) {
-    return comments;
-  }
+const selectRemovedComments = createSelector(
+  selectState,
+  (state) => state.removedComments,
+);
 
-  // TODO this is just for demonstration purposes only, it's not good to do this.
-  return uniqWith([...addedComments, ...comments], getUniqComments);
-});
+const selectUniqComments = createSelector(
+  selectComments,
+  selectAddedComments,
+  (comments, addedComments) =>
+    filteredWithAddedComments(comments, addedComments),
+);
 
 const selectFilteredComments = createSelector(
   selectUniqComments,
-  (comments) => {
-    const removedComments = Storage.getRemovedComments();
-
-    if (isEmpty(removedComments)) {
-      return comments;
-    }
-
+  selectRemovedComments,
+  (comments, removedComments) =>
     // TODO this is just for demonstration purposes only, it's not good to do this.
-    return comments.filter((comment) =>
-      removedComments.every(
-        (removedComment) => !getUniqComments(comment, removedComment),
-      ),
-    );
-  },
+    filteredWithRemovedComments(comments, removedComments),
+);
+
+const selectFormValues = createSelector(
+  selectState,
+  (state) => state.formValues,
 );
 
 const CommentsSelectors = {
@@ -57,6 +61,9 @@ const CommentsSelectors = {
   selectLimit,
   selectUniqComments,
   selectFilteredComments,
+  selectFormValues,
+  selectAddedComments,
+  selectRemovedComments,
 };
 
 export default CommentsSelectors;

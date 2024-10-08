@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { BaseInput } from "../../../shared/components";
 import { CommentsThunks } from "../../../redux/thunks";
 import { CommentsSelector } from "../../../redux/selectors";
-import Storage from "../../../helpers/storage";
+import { CommentsActions } from "../../../redux/slices/commentsSlice";
 
 const CommentForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const comment = useSelector(CommentsSelector.selectComment);
+  const formValues = useSelector(CommentsSelector.selectFormValues);
   const [form] = Form.useForm();
   const body = Form.useWatch("body", form);
 
@@ -21,7 +22,7 @@ const CommentForm = () => {
       userId: comment.user.id,
     });
 
-    Storage.clearFormValues();
+    dispatch(CommentsActions.clearFormValues());
 
     setIsLoading(true);
 
@@ -31,15 +32,17 @@ const CommentForm = () => {
     setIsLoading(false);
   };
 
-  const initialValues = Storage.getFormValues();
+  const initialValues = formValues;
+  // Storage.getFormValues();
 
   const onChange = (e) => {
     const value = e.target.value;
 
-    if (!value) {
-      Storage.clearFormValues();
-    }
-    Storage.setFormValues({ body: e.target.value });
+    dispatch(CommentsActions.setFormValues({ body: value }));
+    // if (!value) {
+    //   Storage.clearFormValues();
+    // }
+    // Storage.setFormValues({ body: e.target.value });
   };
 
   useEffect(() => {

@@ -1,38 +1,28 @@
 import React from "react";
 import { Button } from "antd";
 import { useSelector } from "react-redux";
+import { useMediaQuery } from "react-responsive";
+import { CopyOutlined } from "@ant-design/icons";
 
-import Storage from "../../helpers/storage";
 import { createAndDownloadJsonFile } from "../../utils";
 import { CommentsSelector } from "../../redux/selectors";
+import { BREAKPOINTS_MEDIA_MAP } from "../../constants";
 
 const StateFileCreator = () => {
-  const limit = useSelector(CommentsSelector.selectLimit);
-  const skip = useSelector(CommentsSelector.selectSkip);
   const commentState = useSelector(CommentsSelector.selectState);
+  const isMobile = useMediaQuery({ query: BREAKPOINTS_MEDIA_MAP.mdMax });
 
   const onSaveState = () => {
-    Storage.setCommentsParamsState({ limit, skip });
-
-    const localStorageData = Array.from({ length: localStorage.length }).reduce(
-      (data, _, index) => {
-        const key = localStorage.key(index);
-
-        data[key] = localStorage.getItem(key);
-        return data;
-      },
-      {},
-    );
-    const combinedState = {
-      localStorage: localStorageData,
-      commentState,
-    };
-
-    createAndDownloadJsonFile(combinedState, "comment-app.json");
+    createAndDownloadJsonFile(commentState, "comment-app.json");
   };
 
   return (
-    <Button className="m-r-5" onClick={onSaveState}>
+    <Button
+      size={isMobile ? "small" : "middle"}
+      className="m-r-5"
+      icon={<CopyOutlined />}
+      onClick={onSaveState}
+    >
       Create state file
     </Button>
   );

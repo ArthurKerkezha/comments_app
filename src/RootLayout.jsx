@@ -7,6 +7,7 @@ import { Header } from "./shared/components";
 import ResetList from "./components/ResetList";
 import Uploader from "./components/Uploader";
 import StateFileCreator from "./components/StateFileCreator";
+import SaveController from "./components/SaveController";
 import styles from "./RootLayout.module.less";
 
 const { Content } = Layout;
@@ -26,6 +27,7 @@ const RootLayout = () => {
         <Uploader />
 
         <div className="w-100 d-f jc-fe ai-c">
+          <SaveController />
           {commentId ? (
             <Button icon={<RollbackOutlined />} onClick={onGoBack} />
           ) : (

@@ -4,13 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { get, isEmpty } from "lodash";
 import { Button, notification, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { useMediaQuery } from "react-responsive";
 
 import { CommentsThunks } from "../../redux/thunks";
 import { saveState } from "../../utils";
+import { BREAKPOINTS_MEDIA_MAP } from "../../constants";
 
 const Uploader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isMobile = useMediaQuery({ query: BREAKPOINTS_MEDIA_MAP.mdMax });
 
   const onRestoreState = (file) => {
     const reader = new FileReader();
@@ -45,7 +48,9 @@ const Uploader = () => {
 
   return (
     <Upload beforeUpload={onRestoreState} showUploadList={false} accept=".json">
-      <Button icon={<UploadOutlined />}>Upload State File</Button>
+      <Button size={isMobile ? "small" : "middle"} icon={<UploadOutlined />}>
+        Upload State File
+      </Button>
     </Upload>
   );
 };

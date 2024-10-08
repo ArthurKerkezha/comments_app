@@ -19,7 +19,6 @@ const commentsSlice = createSlice({
   name: "comments",
   initialState,
   reducers: {
-    setFullState: (state, { payload }) => payload,
     setFormValues: (state, { payload }) => {
       Object.assign(state.formValues, payload);
     },

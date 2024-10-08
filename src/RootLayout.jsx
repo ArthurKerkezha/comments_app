@@ -24,6 +24,7 @@ const RootLayout = () => {
   const { commentId } = useParams();
   const navigate = useNavigate();
   const state = useSelector(CommentsSelector.selectState);
+
   const onGoBack = () => {
     navigate(-1);
   };

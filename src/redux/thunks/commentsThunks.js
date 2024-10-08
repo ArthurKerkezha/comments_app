@@ -42,6 +42,7 @@ const loadSavedState = createAsyncThunk(
 
       return { ...storageState, ...data };
     } catch (error) {
+      // TODO errors should be handled correctly
       if (!axios.isCancel(error)) {
         notification.error({ message: generateErrorMessage(error) });
       }
@@ -75,6 +76,7 @@ const loadComments = createAsyncThunk(
         comments: [...comments, ...data.comments],
       };
     } catch (error) {
+      // TODO errors should be handled correctly
       if (!axios.isCancel(error)) {
         notification.error({ message: generateErrorMessage(error) });
       }

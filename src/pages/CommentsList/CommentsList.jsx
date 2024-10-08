@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useBeforeUnload } from "react-router-dom";
 import { List, FloatButton } from "antd";
@@ -7,17 +7,15 @@ import { CommentsSelector } from "../../redux/selectors";
 import { CommentsThunks } from "../../redux/thunks";
 import Storage from "../../helpers/storage";
 import {
+  useGetScrollPositions,
   useObserver,
   useScrollToPosition,
-  useGetScrollPositions,
 } from "../../hooks";
 import CommentsListItem from "./components/CommentsListItem";
 import styles from "./CommentsList.module.less";
 
 const CommentsList = () => {
   const isLoading = useSelector(CommentsSelector.selectIsLoading);
-  const limit = useSelector(CommentsSelector.selectLimit);
-  const skip = useSelector(CommentsSelector.selectSkip);
   const filteredList = useSelector(CommentsSelector.selectFilteredComments);
 
   const dispatch = useDispatch();
@@ -26,9 +24,14 @@ const CommentsList = () => {
 
   const position = Storage.getScrollPosition();
 
-  const loadComments = useCallback(() => {
-    dispatch(CommentsThunks.loadComments());
+  useEffect(() => {
+    dispatch(CommentsThunks.loadInitialState());
   }, [dispatch]);
+
+  const loadComments = useCallback(
+    () => dispatch(CommentsThunks.loadComments()),
+    [dispatch],
+  );
 
   useObserver(elemRef, loadComments);
 
@@ -39,8 +42,7 @@ const CommentsList = () => {
   useBeforeUnload(
     useCallback(() => {
       Storage.setScrollPosition(scrollPosition);
-      Storage.setCommentsParamsState({ limit, skip });
-    }, [scrollPosition, limit, skip]),
+    }, [scrollPosition]),
   );
 
   return (

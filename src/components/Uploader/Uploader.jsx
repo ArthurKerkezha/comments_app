@@ -5,7 +5,8 @@ import { get, isEmpty } from "lodash";
 import { Button, notification, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-import { CommentsActions } from "../../redux/slices/commentsSlice";
+import { CommentsThunks } from "../../redux/thunks";
+import { saveState } from "../../utils";
 
 const Uploader = () => {
   const navigate = useNavigate();
@@ -14,17 +15,14 @@ const Uploader = () => {
   const onRestoreState = (file) => {
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
-        const loadedState = JSON.parse(e.target.result);
-        const localStorageData = loadedState.localStorage;
+        const fileState = JSON.parse(e.target.result);
 
-        Object.entries(localStorageData).forEach(([key, value]) => {
-          localStorage.setItem(key, value);
-        });
+        saveState(fileState);
 
-        dispatch(CommentsActions.setFullState(loadedState.commentState));
-        const comment = get(loadedState, "commentState.comment", {});
+        await dispatch(CommentsThunks.loadSavedState());
+        const comment = get(fileState, "comment", {});
 
         if (!isEmpty(comment)) {
           navigate(`/${comment.id}`);

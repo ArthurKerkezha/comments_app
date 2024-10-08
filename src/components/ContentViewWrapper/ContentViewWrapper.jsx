@@ -10,6 +10,7 @@ import { CommentForm } from "../../pages/CommentsList/components";
 import { DetailsCard, Sider, FormModal } from "../../shared/components";
 import { useLoading } from "../../hooks";
 import Storage from "../../helpers/storage";
+import { CommentsActions } from "../../redux/slices/commentsSlice";
 
 const ContentViewWrapper = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const ContentViewWrapper = () => {
   const onClick = () => navigate(`/comments/${id}`);
 
   const onClose = () => {
-    Storage.clearFormValues();
+    dispatch(CommentsActions.clearFormValues());
 
     navigate("/");
   };

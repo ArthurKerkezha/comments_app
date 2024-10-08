@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "antd";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
+import { CopyOutlined } from "@ant-design/icons";
 
 import { createAndDownloadJsonFile } from "../../utils";
 import { CommentsSelector } from "../../redux/selectors";
@@ -19,6 +20,7 @@ const StateFileCreator = () => {
     <Button
       size={isMobile ? "small" : "middle"}
       className="m-r-5"
+      icon={<CopyOutlined />}
       onClick={onSaveState}
     >
       Create state file

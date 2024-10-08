@@ -5,8 +5,13 @@ import { isEmpty } from "lodash";
 
 import { CommentsServices } from "../../services";
 import { CommentsSelector } from "../selectors";
-import { generateErrorMessage, getUniqComments } from "../../utils";
+import {
+  calculateNextSkip,
+  generateErrorMessage,
+  getUniqComments,
+} from "../../utils";
 import Storage from "../../helpers/storage";
+import { DEFAULT_LIMIT } from "../../constants";
 
 const loadInitialState = createAsyncThunk(
   "[commentsThunks]/loadInitialState",
@@ -22,17 +27,19 @@ const loadInitialState = createAsyncThunk(
 const loadSavedState = createAsyncThunk(
   "[commentsThunks]/loadSavedState",
   // eslint-disable-next-line consistent-return
-  async (_, { getState, dispatch }) => {
+  async (_) => {
     const storageState = Storage.getApplicationState();
     const { limit, skip } = storageState;
-    const params = { limit, skip };
+
+    const countedLimit = skip === DEFAULT_LIMIT ? limit : skip;
+
+    const params = { limit: countedLimit, skip };
 
     try {
       const { data } = await CommentsServices.getComments({
         params,
       });
 
-      console.log("loadSavedState");
       return { ...storageState, ...data };
     } catch (error) {
       if (!axios.isCancel(error)) {
@@ -46,21 +53,23 @@ const loadComments = createAsyncThunk(
   "[commentsThunks]/loadComments",
   async (_, { getState, signal, rejectWithValue }) => {
     const state = getState();
-    const limit = CommentsSelector.selectLimit(state);
     const skip = CommentsSelector.selectSkip(state);
     const total = CommentsSelector.selectTotal(state);
     const comments = CommentsSelector.selectComments(state);
 
-    console.log("loadComments");
-    if ((skip > total || skip === total) && skip !== 0) return null;
+    if (skip >= total && skip !== 0) return;
 
-    const params = { limit, skip };
+    const params = {
+      limit: DEFAULT_LIMIT,
+      skip: calculateNextSkip(skip, DEFAULT_LIMIT, total),
+    };
 
     try {
       const { data } = await CommentsServices.getComments({
         params,
       });
 
+      // eslint-disable-next-line consistent-return
       return {
         ...data,
         comments: [...comments, ...data.comments],
@@ -69,8 +78,6 @@ const loadComments = createAsyncThunk(
       if (!axios.isCancel(error)) {
         notification.error({ message: generateErrorMessage(error) });
       }
-
-      return null;
     }
   },
 );

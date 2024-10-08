@@ -1,13 +1,14 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { CommentsThunks } from "../thunks";
 import { filteredWithRemovedComments, getUniqComments } from "../../utils";
+import { DEFAULT_LIMIT } from "../../constants";
 
 const initialState = {
   isLoading: false,
   comments: [],
   comment: {},
   total: 0,
-  limit: 20,
+  limit: DEFAULT_LIMIT,
   skip: 0,
   formValues: {},
   addedComments: [],
@@ -48,8 +49,7 @@ const commentsSlice = createSlice({
 
         state.comments = payload.comments;
         state.total = payload.total;
-        state.skip = payload.limit + payload.skip;
-        state.isLoading = false;
+        state.skip = payload.skip;
       })
       .addCase(CommentsThunks.addComment.fulfilled, (state, { payload }) => {
         state.addedComments = [payload, ...state.addedComments];
@@ -73,9 +73,15 @@ const commentsSlice = createSlice({
 
         state.comment = payload;
       })
-      .addMatcher(isAnyOf(CommentsThunks.loadComments.rejected), (state) => {
-        state.isLoading = false;
-      });
+      .addMatcher(
+        isAnyOf(
+          CommentsThunks.loadComments.rejected,
+          CommentsThunks.loadComments.fulfilled,
+        ),
+        (state) => {
+          state.isLoading = false;
+        },
+      );
   },
 });
 
